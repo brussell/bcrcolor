@@ -1,46 +1,58 @@
-// Define available themes and their matching CSS classes
-const themes = ['light', 'dark'];
-let currentThemeIndex = 0;
-
-// Map themes to body class names
+// Map theme names to CSS class names
 const themeClassMap = {
-  light: '',
-  dark: 'theme-dark'
+  light: 'theme-light',
+  dark: 'theme-dark',
+  warm: 'theme-warm',
+  cool: 'theme-cool',
+  muted: 'theme-muted'
 };
 
-// Create a button to toggle themes
-const toggleBtn = document.createElement('button');
-toggleBtn.textContent = 'Toggle Theme';
-toggleBtn.style.position = 'fixed';
-toggleBtn.style.top = '1rem';
-toggleBtn.style.right = '1rem';
-toggleBtn.style.padding = '0.5rem 1rem';
-toggleBtn.style.zIndex = '1000';
-toggleBtn.style.background = '#444';
-toggleBtn.style.color = '#fff';
-toggleBtn.style.border = 'none';
-toggleBtn.style.borderRadius = '4px';
-toggleBtn.style.cursor = 'pointer';
+// Track the current theme
+let currentTheme = 'light';
 
-document.body.appendChild(toggleBtn);
+// Set a new theme by name
+function setTheme(name) {
+  // Remove all known theme classes from <body>
+  Object.values(themeClassMap).forEach(cls => {
+    if (cls) document.body.classList.remove(cls);
+  });
 
-// Function to switch themes
-function toggleTheme() {
-  const current = themes[currentThemeIndex];
-  const nextIndex = (currentThemeIndex + 1) % themes.length;
-  const next = themes[nextIndex];
-
-  // Remove current class
-  if (themeClassMap[current]) {
-    document.body.classList.remove(themeClassMap[current]);
+  // Add the new theme class (if defined)
+  const newClass = themeClassMap[name];
+  if (newClass) {
+    document.body.classList.add(newClass);
   }
 
-  // Add next class
-  if (themeClassMap[next]) {
-    document.body.classList.add(themeClassMap[next]);
-  }
-
-  currentThemeIndex = nextIndex;
+  currentTheme = name;
 }
 
-toggleBtn.addEventListener('click', toggleTheme);
+// Create a floating theme switcher UI
+function createThemeButtons() {
+  const container = document.createElement('div');
+  container.id = 'theme-buttons';
+  container.style.position = 'fixed';
+  container.style.top = '1rem';
+  container.style.left = '1rem';
+  container.style.display = 'flex';
+  container.style.flexWrap = 'wrap';
+  container.style.gap = '0.5rem';
+  container.style.zIndex = '1000';
+
+  Object.keys(themeClassMap).forEach(themeName => {
+    const btn = document.createElement('button');
+    btn.textContent = themeName.charAt(0).toUpperCase() + themeName.slice(1);
+    btn.onclick = () => setTheme(themeName);
+    btn.style.padding = '0.5rem 1rem';
+    btn.style.border = 'none';
+    btn.style.borderRadius = '4px';
+    btn.style.cursor = 'pointer';
+    btn.style.background = '#444';
+    btn.style.color = '#fff';
+    container.appendChild(btn);
+  });
+
+  document.body.appendChild(container);
+}
+
+// Run on page load
+createThemeButtons();

@@ -110,6 +110,7 @@ button {
 .site-footer a:hover {
   text-decoration: underline;
 }
+
 /* Dark theme overrides */
 .theme-dark {
   --color-primary: #8ecae6;
@@ -130,4 +131,45 @@ button {
 
 .theme-dark .site-footer {
   color: #aaa;
+}
+
+/* Light theme (explicit) */
+.theme-light {
+  --color-primary: #2a9d8f;
+  --color-secondary: #264653;
+  --color-accent: #e76f51;
+  --color-background: #f1f1f1;
+  --color-surface: #ffffff;
+  --color-text: #1a1a1a;
+}
+
+
+/* Warm theme */
+.theme-warm {
+  --color-primary: #b08968;
+  --color-secondary: #7f5539;
+  --color-accent: #e76f51;
+  --color-background: #fefae0;
+  --color-surface: #faedcd;
+  --color-text: #3e2c23;
+}
+
+/* Cool theme */
+.theme-cool {
+  --color-primary: #457b9d;
+  --color-secondary: #1d3557;
+  --color-accent: #a8dadc;
+  --color-background: #f1faee;
+  --color-surface: #e0fbfc;
+  --color-text: #1d1e2c;
+}
+
+/* Muted theme */
+.theme-muted {
+  --color-primary: #a3b18a;
+  --color-secondary: #588157;
+  --color-accent: #dad7cd;
+  --color-background: #f8f9fa;
+  --color-surface: #dbe5d0;
+  --color-text: #2e2e2e;
 }
