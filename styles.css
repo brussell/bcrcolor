@@ -1,0 +1,133 @@
+/* Root color variables — easy to override in themes */
+:root {
+  --color-primary: #2a9d8f;
+  --color-secondary: #264653;
+  --color-accent: #e76f51;
+  --color-background: #f1f1f1;
+  --color-surface: #ffffff;
+  --color-text: #1a1a1a;
+}
+
+/* Reset & base styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+body {
+  font-family: system-ui, sans-serif;
+  background-color: var(--color-background);
+  color: var(--color-text);
+  line-height: 1.6;
+  padding: 1rem;
+}
+
+/* Layout components */
+.site-header,
+.site-footer {
+  text-align: center;
+  margin: 2rem 0;
+}
+.site-header h1 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+.site-header p {
+  font-size: 1.1rem;
+  color: var(--color-secondary);
+}
+
+/* Swatches */
+.palette-preview {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 2rem 0;
+}
+.swatch {
+  flex: 1 1 120px;
+  padding: 1rem;
+  color: #fff;
+  text-align: center;
+  border-radius: 4px;
+  font-weight: bold;
+}
+.bg-primary    { background-color: var(--color-primary); }
+.bg-secondary  { background-color: var(--color-secondary); }
+.bg-accent     { background-color: var(--color-accent); }
+.bg-background { background-color: var(--color-background); color: var(--color-text); }
+.bg-surface    { background-color: var(--color-surface); color: var(--color-text); }
+
+/* Card layout */
+.content {
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  max-width: 1000px;
+  margin: 0 auto 4rem;
+}
+.card {
+  background-color: var(--color-surface);
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+.card h2 {
+  margin-bottom: 0.5rem;
+}
+.card p {
+  margin-bottom: 1rem;
+}
+
+/* Buttons */
+button {
+  border: none;
+  padding: 0.5rem 1rem;
+  font-weight: bold;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.button-accent {
+  background-color: var(--color-accent);
+  color: #fff;
+}
+.button-secondary {
+  background-color: var(--color-secondary);
+  color: #fff;
+}
+
+/* Footer */
+.site-footer {
+  font-size: 0.9rem;
+  color: #555;
+}
+.site-footer a {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+.site-footer a:hover {
+  text-decoration: underline;
+}
+/* Dark theme overrides */
+.theme-dark {
+  --color-primary: #8ecae6;
+  --color-secondary: #219ebc;
+  --color-accent: #ffb703;
+  --color-background: #1a1a1a;
+  --color-surface: #2c2c2c;
+  --color-text: #f1f1f1;
+}
+.theme-dark .site-header p {
+  color: var(--color-primary);
+}
+
+.theme-dark .card {
+  border-color: #444;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.4);
+}
+
+.theme-dark .site-footer {
+  color: #aaa;
+}
