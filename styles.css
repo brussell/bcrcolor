@@ -173,3 +173,138 @@ button {
   --color-surface: #dbe5d0;
   --color-text: #2e2e2e;
 }
+
+/* Hero section */
+.hero {
+  text-align: center;
+  padding: 4rem 1rem;
+  background-color: var(--color-surface);
+  color: var(--color-text);
+}
+.hero h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+.hero p {
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+}
+
+/* Feature cards grid */
+.features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  padding: 2rem 1rem;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+.feature-card {
+  background: var(--color-surface);
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  text-align: center;
+}
+
+/* About section */
+.about {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  padding: 4rem 1rem;
+  align-items: center;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+.about img {
+  flex: 1 1 300px;
+  max-width: 100%;
+  border-radius: 8px;
+}
+.about div {
+  flex: 1 1 300px;
+}
+.about h2 {
+  margin-bottom: 1rem;
+}
+.about p {
+  margin-bottom: 1rem;
+}
+
+/* Base font size for better scaling */
+body {
+  font-size: 16px;
+}
+
+/* Responsive tweaks for tablets and smaller */
+@media (max-width: 768px) {
+  .hero h1 {
+    font-size: 2rem;
+  }
+
+  .hero p {
+    font-size: 1rem;
+  }
+
+  .features {
+    grid-template-columns: 1fr;
+    padding: 1.5rem;
+  }
+
+  .feature-card {
+    text-align: left;
+  }
+
+  .about {
+    flex-direction: column;
+    text-align: center;
+    padding: 2rem 1rem;
+  }
+
+  .about div {
+    text-align: center;
+  }
+
+  button {
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto;
+    display: block;
+  }
+}
+
+/* Responsive tweaks for very small screens */
+@media (max-width: 480px) {
+  .hero {
+    padding: 3rem 1rem;
+  }
+
+  .about {
+    padding: 2rem 1rem;
+  }
+
+  .site-header,
+  .site-footer {
+    padding: 1rem;
+  }
+
+  .swatch {
+    flex: 1 1 100%;
+    font-size: 0.9rem;
+    padding: 0.75rem;
+  }
+
+  #theme-buttons {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  #theme-buttons button {
+    width: 100%;
+    font-size: 0.9rem;
+  }
+}
+
+

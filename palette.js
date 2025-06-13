@@ -1,4 +1,3 @@
-// Map theme names to CSS class names
 const themeClassMap = {
   light: 'theme-light',
   dark: 'theme-dark',
@@ -7,26 +6,34 @@ const themeClassMap = {
   muted: 'theme-muted'
 };
 
-// Track the current theme
 let currentTheme = 'light';
+const buttonRefs = {}; // Store references to each button for styling
 
-// Set a new theme by name
 function setTheme(name) {
-  // Remove all known theme classes from <body>
+  // Remove all theme classes
   Object.values(themeClassMap).forEach(cls => {
     if (cls) document.body.classList.remove(cls);
   });
 
-  // Add the new theme class (if defined)
+  // Apply new class
   const newClass = themeClassMap[name];
   if (newClass) {
     document.body.classList.add(newClass);
   }
 
+  // Animate transition
+  document.body.style.transition = 'background-color 0.3s ease, color 0.3s ease';
+
+  // Save to localStorage
+  localStorage.setItem('bcr-theme', name);
   currentTheme = name;
+
+  // Highlight active button
+  Object.keys(buttonRefs).forEach(theme => {
+    buttonRefs[theme].style.outline = theme === name ? '2px solid #fff' : 'none';
+  });
 }
 
-// Create a floating theme switcher UI
 function createThemeButtons() {
   const container = document.createElement('div');
   container.id = 'theme-buttons';
@@ -48,11 +55,20 @@ function createThemeButtons() {
     btn.style.cursor = 'pointer';
     btn.style.background = '#444';
     btn.style.color = '#fff';
+
+    buttonRefs[themeName] = btn;
     container.appendChild(btn);
   });
 
   document.body.appendChild(container);
 }
 
-// Run on page load
+// On load: restore theme from localStorage or default
+function initTheme() {
+  const savedTheme = localStorage.getItem('bcr-theme');
+  const themeToApply = savedTheme && themeClassMap[savedTheme] ? savedTheme : 'light';
+  setTheme(themeToApply);
+}
+
 createThemeButtons();
+initTheme();
