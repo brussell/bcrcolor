@@ -35,15 +35,16 @@ function setTheme(name) {
 }
 
 function createThemeButtons() {
+  const target = document.getElementById('theme-buttons');
+  if (!target) {
+    console.warn('theme-buttons container not found');
+    return;
+  }
+
   const container = document.createElement('div');
-  container.id = 'theme-buttons';
-  container.style.position = 'fixed';
-  container.style.top = '1rem';
-  container.style.left = '1rem';
   container.style.display = 'flex';
   container.style.flexWrap = 'wrap';
   container.style.gap = '0.5rem';
-  container.style.zIndex = '1000';
 
   Object.keys(themeClassMap).forEach(themeName => {
     const btn = document.createElement('button');
@@ -60,15 +61,18 @@ function createThemeButtons() {
     container.appendChild(btn);
   });
 
-  document.body.appendChild(container);
+  // ✅ Insert the theme button group into the right HTML div
+  target.appendChild(container);
 }
 
-// On load: restore theme from localStorage or default
 function initTheme() {
   const savedTheme = localStorage.getItem('bcr-theme');
   const themeToApply = savedTheme && themeClassMap[savedTheme] ? savedTheme : 'light';
   setTheme(themeToApply);
 }
 
-createThemeButtons();
-initTheme();
+// ✅ Run after DOM is fully loaded
+document.addEventListener('DOMContentLoaded', () => {
+  createThemeButtons();
+  initTheme();
+});
