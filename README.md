@@ -1,0 +1,3 @@
+bcr color, working title, is a lightweight, front-end playground for exploring and creating CSS color themes in real time. It features a responsive layout with a navigation bar and hamburger menu, live theme switching among predefined palettes (light, dark, warm, cool, muted), a live color editor with color pickers and CSS export, and dynamic creation and management of custom themes.
+
+It is being created using prompt engineering with ChatGTP GPT-4 model o4-mini-high LLM.
