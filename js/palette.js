@@ -1,6 +1,6 @@
 // js/palette.js
 
-// Exposed theme map
+// 1) Core and built-in themes:
 window.themeClassMap = {
   light: 'theme-light',
   dark:  'theme-dark',
@@ -9,59 +9,44 @@ window.themeClassMap = {
   muted: 'theme-muted'
 };
 
+// Will hold only the user-created themes
+window.customThemes = {};
+
 window.currentTheme = 'light';
-window.buttonRefs    = {}; // store button elements by theme name
+window.buttonRefs    = {};
 
+// ---- Remove/apply theme logic stays the same ----
 function setTheme(name) {
-  // remove all theme classes
-  Object.values(window.themeClassMap).forEach(cls => {
-    if (cls) document.body.classList.remove(cls);
-  });
-
-  // apply the new one
-  const newClass = window.themeClassMap[name];
-  if (newClass) document.body.classList.add(newClass);
-
-  // smooth transition
+  Object.values(window.themeClassMap).forEach(c => c && document.body.classList.remove(c));
+  const cls = window.themeClassMap[name];
+  if (cls) document.body.classList.add(cls);
   document.body.style.transition = 'background-color 0.3s ease, color 0.3s ease';
-
-  // persist
   localStorage.setItem('bcr-theme', name);
   window.currentTheme = name;
-
-  // highlight active button
-  Object.keys(window.buttonRefs).forEach(theme => {
-    window.buttonRefs[theme].style.outline =
-      theme === name ? '2px solid #fff' : 'none';
+  // highlight active
+  Object.keys(window.buttonRefs).forEach(t => {
+    window.buttonRefs[t].style.outline = (t === name) ? '2px solid #fff' : 'none';
   });
 }
 
+// ---- Create all buttons based on themeClassMap ----
 function createThemeButtons() {
   const target = document.getElementById('theme-buttons');
-  if (!target) {
-    console.warn('theme-buttons container not found');
-    return;
-  }
-
+  if (!target) return console.warn('theme-buttons container not found');
   const container = document.createElement('div');
-  container.style.display    = 'flex';
-  container.style.flexWrap   = 'wrap';
-  container.style.gap        = '0.5rem';
+  container.style.display  = 'flex';
+  container.style.gap      = '0.5rem';
+  container.style.flexWrap = 'wrap';
 
   Object.keys(window.themeClassMap).forEach(themeName => {
     const btn = document.createElement('button');
     btn.textContent = themeName.charAt(0).toUpperCase() + themeName.slice(1);
-    btn.onclick     = () => setTheme(themeName);
-
+    btn.onclick = () => setTheme(themeName);
     Object.assign(btn.style, {
-      padding:      '0.5rem 1rem',
-      border:       'none',
-      borderRadius: '4px',
-      cursor:       'pointer',
-      background:   '#444',
-      color:        '#fff'
+      padding: '0.5rem 1rem', border: 'none',
+      borderRadius: '4px', cursor: 'pointer',
+      background: '#444', color: '#fff'
     });
-
     window.buttonRefs[themeName] = btn;
     container.appendChild(btn);
   });
@@ -69,62 +54,90 @@ function createThemeButtons() {
   target.appendChild(container);
 }
 
+// ---- Initialize theme on load ----
 function initTheme() {
   const saved = localStorage.getItem('bcr-theme');
-  const toApply = saved && window.themeClassMap[saved] ? saved : 'light';
+  const toApply = (saved && window.themeClassMap[saved]) ? saved : 'light';
   setTheme(toApply);
 }
 
+// ---- Persist customThemes to localStorage ----
+function saveCustomThemes() {
+  localStorage.setItem('bcr-custom-themes', JSON.stringify(window.customThemes));
+}
+
+// ---- On load, read stored custom themes and register them ----
+function loadCustomThemes() {
+  const data = localStorage.getItem('bcr-custom-themes');
+  if (!data) return;
+  try {
+    const themes = JSON.parse(data);
+    let styleTag = document.getElementById('dynamic-themes');
+    if (!styleTag) {
+      styleTag = document.createElement('style');
+      styleTag.id = 'dynamic-themes';
+      document.head.appendChild(styleTag);
+    }
+    Object.entries(themes).forEach(([name, values]) => {
+      const className = `theme-${name}`;
+      // inject CSS rule
+      const rules = Object.entries(values)
+        .map(([k,v]) => `  ${k}: ${v};`).join('\n');
+      styleTag.sheet.insertRule(`.${className} {\n${rules}\n}`, styleTag.sheet.cssRules.length);
+      // register in maps
+      window.themeClassMap[name]   = className;
+      window.customThemes[name]    = values;
+    });
+  } catch(err) {
+    console.error('Failed to load custom themes', err);
+  }
+}
+
 /**
- * Dynamically add a new theme at runtime.
- * name:   slug (e.g. "mytheme")
- * values: object of CSS var → hex, e.g. { '--color-primary': '#123456', … }
+ * Call this to create a new theme at runtime:
+ *  - injects CSS
+ *  - registers in maps
+ *  - persists to localStorage
+ *  - appends a button
  */
 function addTheme(name, values) {
   const className = `theme-${name}`;
-
-  // inject or find <style id="dynamic-themes">
+  // inject CSS
   let styleTag = document.getElementById('dynamic-themes');
   if (!styleTag) {
     styleTag = document.createElement('style');
     styleTag.id = 'dynamic-themes';
     document.head.appendChild(styleTag);
   }
-
-  // build and insert the CSS rule
   const rules = Object.entries(values)
-    .map(([varName, val]) => `  ${varName}: ${val};`)
-    .join('\n');
-  styleTag.sheet.insertRule(
-    `.${className} {\n${rules}\n}`,
-    styleTag.sheet.cssRules.length
-  );
+    .map(([k,v]) => `  ${k}: ${v};`).join('\n');
+  styleTag.sheet.insertRule(`.${className} {\n${rules}\n}`, styleTag.sheet.cssRules.length);
 
-  // register and create its button
-  window.themeClassMap[name] = className;
+  // register
+  window.themeClassMap[name]    = className;
+  window.customThemes[name]     = values;
+  saveCustomThemes();
+
+  // append button
   const target = document.getElementById('theme-buttons');
   const btn = document.createElement('button');
   btn.textContent = name.charAt(0).toUpperCase() + name.slice(1);
-  btn.onclick     = () => setTheme(name);
-
+  btn.onclick = () => setTheme(name);
   Object.assign(btn.style, {
-    padding:      '0.5rem 1rem',
-    border:       'none',
-    borderRadius: '4px',
-    cursor:       'pointer',
-    background:   '#444',
-    color:        '#fff'
+    padding: '0.5rem 1rem', border: 'none',
+    borderRadius: '4px', cursor: 'pointer',
+    background: '#444', color: '#fff'
   });
-
   window.buttonRefs[name] = btn;
   target.appendChild(btn);
 }
 
-// expose globally
+// expose
 window.addTheme = addTheme;
 
-// init on DOM ready
+// on DOM ready
 document.addEventListener('DOMContentLoaded', () => {
+  loadCustomThemes();
   createThemeButtons();
   initTheme();
 });

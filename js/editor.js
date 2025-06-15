@@ -49,3 +49,18 @@ document.getElementById('add-theme').addEventListener('click', () => {
   window.addTheme(name, values);
   setTheme(name);
 });
+
+document.getElementById('add-theme').addEventListener('click', () => {
+  let name = prompt('Name your new theme (no spaces):');
+  if (!name) return;
+  name = name.trim().toLowerCase().replace(/\s+/g, '-');
+
+  const values = {};
+  Object.entries(mappings).forEach(([inputId, varName]) => {
+    values[varName] = getComputedStyle(document.documentElement)
+      .getPropertyValue(varName).trim();
+  });
+
+  window.addTheme(name, values);
+  setTheme(name);
+});
