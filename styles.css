@@ -479,4 +479,18 @@ body {
   cursor: pointer;
 }
 
+.theme-name-label {
+  display: inline-flex;
+  flex-direction: column;
+  font-size: 0.9rem;
+  margin-right: 0.5rem;
+}
+#theme-name-input {
+  margin-top: 0.25rem;
+  padding: 0.4rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 120px;
+}
+
 
