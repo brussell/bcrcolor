@@ -433,4 +433,10 @@ body {
   cursor: pointer;
 }
 
+#add-theme {
+  margin-left: 1rem;
+  background: var(--color-primary);
+  color: #fff;
+}
+
 
