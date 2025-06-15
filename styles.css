@@ -439,4 +439,44 @@ body {
   color: #fff;
 }
 
+/* Wrap each theme button so we can position a delete “×” */
+.theme-btn-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+/* The little “×” button */
+.theme-btn-wrapper .delete-btn {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  width: 16px;
+  height: 16px;
+  line-height: 16px;
+  font-size: 12px;
+  text-align: center;
+  background: #e74c3c;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  display: none;
+}
+
+/* Show the delete button on hover */
+.theme-btn-wrapper:hover .delete-btn {
+  display: block;
+}
+
+/* Style the Reset button */
+#reset-theme {
+  margin-left: 0.5rem;
+  background: var(--color-secondary);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
+
 
