@@ -1,36 +1,38 @@
-const themeClassMap = {
+// js/palette.js
+
+// Exposed theme map
+window.themeClassMap = {
   light: 'theme-light',
-  dark: 'theme-dark',
-  warm: 'theme-warm',
-  cool: 'theme-cool',
+  dark:  'theme-dark',
+  warm:  'theme-warm',
+  cool:  'theme-cool',
   muted: 'theme-muted'
 };
 
-let currentTheme = 'light';
-const buttonRefs = {}; // Store references to each button for styling
+window.currentTheme = 'light';
+window.buttonRefs    = {}; // store button elements by theme name
 
 function setTheme(name) {
-  // Remove all theme classes
-  Object.values(themeClassMap).forEach(cls => {
+  // remove all theme classes
+  Object.values(window.themeClassMap).forEach(cls => {
     if (cls) document.body.classList.remove(cls);
   });
 
-  // Apply new class
-  const newClass = themeClassMap[name];
-  if (newClass) {
-    document.body.classList.add(newClass);
-  }
+  // apply the new one
+  const newClass = window.themeClassMap[name];
+  if (newClass) document.body.classList.add(newClass);
 
-  // Animate transition
+  // smooth transition
   document.body.style.transition = 'background-color 0.3s ease, color 0.3s ease';
 
-  // Save to localStorage
+  // persist
   localStorage.setItem('bcr-theme', name);
-  currentTheme = name;
+  window.currentTheme = name;
 
-  // Highlight active button
-  Object.keys(buttonRefs).forEach(theme => {
-    buttonRefs[theme].style.outline = theme === name ? '2px solid #fff' : 'none';
+  // highlight active button
+  Object.keys(window.buttonRefs).forEach(theme => {
+    window.buttonRefs[theme].style.outline =
+      theme === name ? '2px solid #fff' : 'none';
   });
 }
 
@@ -42,36 +44,86 @@ function createThemeButtons() {
   }
 
   const container = document.createElement('div');
-  container.style.display = 'flex';
-  container.style.flexWrap = 'wrap';
-  container.style.gap = '0.5rem';
+  container.style.display    = 'flex';
+  container.style.flexWrap   = 'wrap';
+  container.style.gap        = '0.5rem';
 
-  Object.keys(themeClassMap).forEach(themeName => {
+  Object.keys(window.themeClassMap).forEach(themeName => {
     const btn = document.createElement('button');
     btn.textContent = themeName.charAt(0).toUpperCase() + themeName.slice(1);
-    btn.onclick = () => setTheme(themeName);
-    btn.style.padding = '0.5rem 1rem';
-    btn.style.border = 'none';
-    btn.style.borderRadius = '4px';
-    btn.style.cursor = 'pointer';
-    btn.style.background = '#444';
-    btn.style.color = '#fff';
+    btn.onclick     = () => setTheme(themeName);
 
-    buttonRefs[themeName] = btn;
+    Object.assign(btn.style, {
+      padding:      '0.5rem 1rem',
+      border:       'none',
+      borderRadius: '4px',
+      cursor:       'pointer',
+      background:   '#444',
+      color:        '#fff'
+    });
+
+    window.buttonRefs[themeName] = btn;
     container.appendChild(btn);
   });
 
-  // ✅ Insert the theme button group into the right HTML div
   target.appendChild(container);
 }
 
 function initTheme() {
-  const savedTheme = localStorage.getItem('bcr-theme');
-  const themeToApply = savedTheme && themeClassMap[savedTheme] ? savedTheme : 'light';
-  setTheme(themeToApply);
+  const saved = localStorage.getItem('bcr-theme');
+  const toApply = saved && window.themeClassMap[saved] ? saved : 'light';
+  setTheme(toApply);
 }
 
-// ✅ Run after DOM is fully loaded
+/**
+ * Dynamically add a new theme at runtime.
+ * name:   slug (e.g. "mytheme")
+ * values: object of CSS var → hex, e.g. { '--color-primary': '#123456', … }
+ */
+function addTheme(name, values) {
+  const className = `theme-${name}`;
+
+  // inject or find <style id="dynamic-themes">
+  let styleTag = document.getElementById('dynamic-themes');
+  if (!styleTag) {
+    styleTag = document.createElement('style');
+    styleTag.id = 'dynamic-themes';
+    document.head.appendChild(styleTag);
+  }
+
+  // build and insert the CSS rule
+  const rules = Object.entries(values)
+    .map(([varName, val]) => `  ${varName}: ${val};`)
+    .join('\n');
+  styleTag.sheet.insertRule(
+    `.${className} {\n${rules}\n}`,
+    styleTag.sheet.cssRules.length
+  );
+
+  // register and create its button
+  window.themeClassMap[name] = className;
+  const target = document.getElementById('theme-buttons');
+  const btn = document.createElement('button');
+  btn.textContent = name.charAt(0).toUpperCase() + name.slice(1);
+  btn.onclick     = () => setTheme(name);
+
+  Object.assign(btn.style, {
+    padding:      '0.5rem 1rem',
+    border:       'none',
+    borderRadius: '4px',
+    cursor:       'pointer',
+    background:   '#444',
+    color:        '#fff'
+  });
+
+  window.buttonRefs[name] = btn;
+  target.appendChild(btn);
+}
+
+// expose globally
+window.addTheme = addTheme;
+
+// init on DOM ready
 document.addEventListener('DOMContentLoaded', () => {
   createThemeButtons();
   initTheme();
